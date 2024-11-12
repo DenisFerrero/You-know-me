@@ -17,35 +17,40 @@ module.exports = {
    * @returns {boolean} Whatever the user has been inserted or not
    */
   async subscribe (username) {
-    const result = await new Promise(function (resolve, reject) {
-      db.get('SELECT COUNT(id) AS count FROM users WHERE active = 1;', [], function (err, row) {
-        if (err) return reject(err);
-        else return resolve(row.count);
-      })
-    });
-    // If there are less users active than the limit
-    if (result < process.env.TELEGRAM_POLL_OPTIONS_LIMIT) {
-      return await new Promise(function (resolve, reject) {
-        db.get('SELECT id FROM users WHERE username = ? LIMIT 1;', username, function (err, row) {
+    try {
+      const result = await new Promise(function (resolve, reject) {
+        db.get('SELECT COUNT(id) AS count FROM users WHERE active = 1;', [], function (err, row) {
           if (err) return reject(err);
-          // Set the user active if already exists
-          if (id !== null) {
-            db.run('UPDATE users SET active = 1 WHERE id = ?', id, function (_err) {
-              if (err) return reject(err);
-              return resolve(true);
-            });
-          }
-          // Create the user if not exists
-          else {
-            db.run('INSERT INTO users (username, active) VALUES (?, 1)', username, function (_err) {
-              if (err) return reject(err);
-              return resolve(true);
-            });
-          }
+          else return resolve(row.count);
         })
       });
+      // If there are less users active than the limit
+      if (result < process.env.TELEGRAM_POLL_OPTIONS_LIMIT) {
+        return await new Promise(function (resolve, reject) {
+          db.get('SELECT id FROM users WHERE username = ? LIMIT 1;', username, function (err, row) {
+            if (err) return reject(err);
+            // Set the user active if already exists
+            if (id !== null) {
+              db.run('UPDATE users SET active = 1 WHERE id = ?', id, function (_err) {
+                if (err) return reject(err);
+                return resolve(true);
+              });
+            }
+            // Create the user if not exists
+            else {
+              db.run('INSERT INTO users (username, active) VALUES (?, 1)', username, function (_err) {
+                if (err) return reject(err);
+                return resolve(true);
+              });
+            }
+          })
+        });
+      }
+      else return false;
+    } catch (ex) {
+      console.verbose(ex.message);
+      return false;
     }
-    else return false;
   },
   /**
    * Unsubscribe user to the poll
@@ -53,11 +58,16 @@ module.exports = {
    * @returns {boolean} Whatever the user has been unsubscribed or not
    */
   async unsubscribe (username) {
-    return await new Promise (function (resolve, reject) {
-      db.run('UPDATE users SET active = 0 WHERE username = ?', username, function (_err) {
-        if (err) return reject(err);
-        return resolve(true);
+    try {
+      return await new Promise (function (resolve, reject) {
+        db.run('UPDATE users SET active = 0 WHERE username = ?', username, function (_err) {
+          if (err) return reject(err);
+          return resolve(true);
+        });
       });
-    })
+    } catch (ex) {
+      console.verbose(ex.message);
+      return false;
+    }
   }
 }
