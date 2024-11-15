@@ -14,6 +14,17 @@ const TelegramBot = require('node-telegram-bot-api');
 
 const bot = new TelegramBot(process.env.TELEGRAM_TOKEN, { polling: true });
 
+bot.setMyCommands(JSON.stringify([
+  { command: 'join', description: 'Join into the poll' },
+  { command: 'leave', description: 'Leave the poll' },
+  { command: 'list', description: 'Show the active users in the poll' }
+]));
+
+bot.onText(/\start/, (msg) => {
+  const username = msg.from.username ?? msg.from.first_name;
+  bot.sendMessage(msg.chat.id, `${username} welcome to Know Your Name bot! Choose your command from the list below`);
+})
+
 // Add user to the poll
 bot.onText(/\/join/, async (msg) => {
   const username = msg.from.username ?? msg.from.first_name;

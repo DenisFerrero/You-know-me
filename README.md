@@ -12,14 +12,9 @@ List of variables available:
 - ``TELEGRAM_CHAT``: Telegram chat where post the polls.
 - ``TELEGRAM_POLL_OPTIONS_LIMIT``: Telegram poll options limit. At the moment is 10 and so will it be by default.
 - ``CHATGPT_TOKEN``: Chat GPT token use to generate the questions of the poll.
+- ``POLL_CRON``: Cron pattern to trigger the poll in chat.
+- ``POLL_EXPIRE``: Amount of time after which the poll expires. If none, not applied.
 
 ## Telegram
 
 Create you bot using **FatherBot** and with the API token provided by that bot use it as the environment variable ``TELEGRAM_TOKEN``.
-If you find it comfy, always using **FatherBot**, register the following commands on the bot:
-
-```text
-join - Join into the poll
-leave - Leave the poll
-list - Show the active users in the poll
-```
