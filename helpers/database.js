@@ -25,28 +25,25 @@ module.exports = {
         })
       });
       // If there are less users active than the limit
-      if (result < parseInt(process.env.TELEGRAM_POLL_OPTIONS_LIMIT)) {
-        return await new Promise(function (resolve, reject) {
-          db.get('SELECT id FROM users WHERE username = ? LIMIT 1;', username, function (err, row) {
-            if (err) return reject(err);
-            // Set the user active if already exists
-            if (row) {
-              db.run('UPDATE users SET active = 1 WHERE id = ?', row.id, function (_err) {
-                if (err) return reject(err);
-                return resolve(true);
-              });
-            }
-            // Create the user if not exists
-            else {
-              db.run('INSERT INTO users (username, active) VALUES (?, 1)', username, function (_err) {
-                if (err) return reject(err);
-                return resolve(true);
-              });
-            }
-          })
-        });
-      }
-      else return false;
+      return await new Promise(function (resolve, reject) {
+        db.get('SELECT id FROM users WHERE username = ? LIMIT 1;', username, function (err, row) {
+          if (err) return reject(err);
+          // Set the user active if already exists
+          if (row) {
+            db.run('UPDATE users SET active = 1 WHERE id = ?', row.id, function (_err) {
+              if (err) return reject(err);
+              return resolve(true);
+            });
+          }
+          // Create the user if not exists
+          else {
+            db.run('INSERT INTO users (username, active) VALUES (?, 1)', username, function (_err) {
+              if (err) return reject(err);
+              return resolve(true);
+            });
+          }
+        })
+      });
     } catch (ex) {
       console.verbose(ex.message);
       return false;
