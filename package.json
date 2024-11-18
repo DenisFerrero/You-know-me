@@ -4,7 +4,8 @@
   "description": "Telegram based bot that periodically create a poll on a channel of friends",
   "main": "index.js",
   "scripts": {
-    "test": "node index.js"
+    "test": "node index.js",
+    "get_chat": "node get_chat.js"
   },
   "repository": {
     "type": "git",
