@@ -1,0 +1,10 @@
+.vscode/**
+node_modules/**
+.env
+,gitignore
+Dockerfile
+get_chat.js
+LICENSE
+*.db
+*.tar
+*.tar.gz
